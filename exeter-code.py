@@ -5,8 +5,9 @@ import re
 import time
 
 
-start = time.time()
+start = time.time() #start time
 
+#store the words to be found and replaced in a list
 
 list_words = list()
 for line in open('find_words.txt'):
@@ -14,6 +15,7 @@ for line in open('find_words.txt'):
 print(list_words)
 
 
+#store the english and french words to a dictionary
 
 french_dictionary = pd.read_csv('french_dictionary.csv', header=None)
 eng_list = french_dictionary[0].to_list()
@@ -21,13 +23,17 @@ french_list = french_dictionary[1].to_list()
 
 l = len(french_list)
 
-d = {eng_list[i]:french_list[i] for i in range(l)}
+#create a dictionary
+dictionary = {eng_list[i]:french_list[i] for i in range(l)}
 
-dictionary = dict(zip(eng_list,french_list))
 print(dictionary)
+
+#open the file in which the words need to be replaced
 
 with open('t8.shakespeare.txt', 'r') as file:
     data = file.read()
+
+#function to replace the words in the text file
 
 def replace_words(text, dictionary):
     check=[]
@@ -39,8 +45,11 @@ def replace_words(text, dictionary):
     
     return text, frequency, check
 
+#store the replaced text files, frequency of words and checked words
 
 replaced_text, frequency_words, check_words = replace_words(data, dictionary)
+
+#find the number of words replaced
 
 count=0
 
@@ -51,15 +60,19 @@ for i in range(len(frequency_words)):
 
 print("Number of words replaced are : ", count)
 
+#find the frequency of words
+
 freq = []
 for i in range(len(frequency_words)):
     freq.append(len(frequency_words[i]))
 
-
+#store the replaced text
 
 file = open("t8.shakespeare.translated.txt", "w")
 file.write(" %s " % replaced_text)
 file.close()
+
+#store the data as csv
 
 Dict_words=[{'English word':eng, 'French word':fre, 'Frequency':fr} for eng,fre,fr in zip(eng_list,french_list,freq)]
 
@@ -69,6 +82,8 @@ print(dataFrame)
 
 dataFrame.to_csv("frequency.csv", index=None)
 
+#find the total number of words replaced
+
 list_of_words = []
 for i in range(len(dataFrame)):
     if dataFrame['Frequency'][i]>0:
@@ -77,6 +92,8 @@ for i in range(len(dataFrame)):
 print(list_of_words)
 
 print(len(list_of_words))
+
+#find the time taken and memory used
 
 end=time.time()
 print(end - start, "seconds")
